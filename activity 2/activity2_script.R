@@ -260,3 +260,20 @@ hist(datW$PRCP[datW$siteN == 1],
      ylab="Relative frequency",
      col="grey50",
      border="white")
+
+#get precipitation for each year and site in the data
+#create new dataframe with just values of interest- sum of precip
+sumyearlyPRCP <- aggregate(datW$PRCP ~ datW$NAME+datW$year, FUN="sum",na.rm=TRUE)
+names(sumyearlyPRCP)<- c("Site", "Year", "Precipitation")
+
+#histogram of yearly precipiation for aberdeen
+hist(sumyearlyPRCP$Precipitation[sumyearlyPRCP$Site == "ABERDEEN, WA US"],
+     freq=FALSE, 
+     main = paste(levels(datW$NAME)[1]),
+     xlab = "Yearly Precipitation in Inches", 
+     ylab="Relative frequency",
+     col="grey50",
+     border="white")
+
+#create new dataframe with just values of interest- mean of precip
+meanyearlyPRCP <- aggregate(datW$PRCP ~ datW$NAME+datW$year, FUN="mean",na.rm=TRUE)
