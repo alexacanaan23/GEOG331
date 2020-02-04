@@ -56,7 +56,7 @@ averageTemp
 datW$siteN <- as.numeric(datW$NAME)
 
 
-#QUESTION NUMBER 1
+#QUESTION NUMBER 3
 
 #make a histogram for the first site in our levels
 #main= is the title name argument.
@@ -70,7 +70,7 @@ hist(datW$TAVE[datW$siteN == 1],
      col="grey50",
      border="white")
 
-#QUESTION NUMBER 2
+#QUESTION NUMBER 4
 
 #add all histograms into the same window
 par(mfrow=c(2,2))
@@ -235,8 +235,7 @@ pnorm(5,
 pnorm(5,
       mean(datW$TAVE[datW$siteN == 1],na.rm=TRUE),
       sd(datW$TAVE[datW$siteN == 1],na.rm=TRUE))- pnorm(0,
-                                                        mean(datW$TAVE[datW$siteN == 1],na.rm=TRUE),
-                                                        sd(datW$TAVE[datW$siteN == 1],na.rm=TRUE))
+                                                        mean(datW$TAVE[datW$siteN == 1],na.rm=TRUE),                                                        sd(datW$TAVE[datW$siteN == 1],na.rm=TRUE))
 
 #pnrom of 20 gives me all probability (area of the curve) below 20 
 #subtracting from one leaves me with the area above 20
