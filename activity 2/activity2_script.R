@@ -56,7 +56,7 @@ averageTemp
 datW$siteN <- as.numeric(datW$NAME)
 
 
-
+#QUESTION NUMBER 1
 
 #make a histogram for the first site in our levels
 #main= is the title name argument.
@@ -69,6 +69,8 @@ hist(datW$TAVE[datW$siteN == 1],
      ylab="Relative frequency",
      col="grey50",
      border="white")
+
+#QUESTION NUMBER 2
 
 #add all histograms into the same window
 par(mfrow=c(2,2))
@@ -188,6 +190,7 @@ abline(v = mean(datW$TAVE[datW$siteN == 4],na.rm=TRUE) + sd(datW$TAVE[datW$siteN
 #Here you want to paste the actual name of the factor not the numeric index
 #since that will be more meaningful. 
 #note I've named the histogram so I can reference it later
+par(mfrow=c(1,1))
 h1 <- hist(datW$TAVE[datW$siteN == 1],
            freq=FALSE, 
            main = paste(levels(datW$NAME)[1]),
@@ -247,10 +250,14 @@ qnorm(0.95,
       mean(datW$TAVE[datW$siteN == 1],na.rm=TRUE),
       sd(datW$TAVE[datW$siteN == 1],na.rm=TRUE))
 
+#QUESTION NUMBER 6
+
 #prob that we see temperatures higher than the current threshold in aberdeen
 1 - pnorm(18.51026,
       mean(datW$TAVE[datW$siteN == 1]+4,na.rm=TRUE),
       sd(datW$TAVE[datW$siteN == 1],na.rm=TRUE))
+
+#QUESTION NUMBER 7
 
 #histogram of daily precipiation for aberdeen
 hist(datW$PRCP[datW$siteN == 1],
@@ -260,6 +267,8 @@ hist(datW$PRCP[datW$siteN == 1],
      ylab="Relative frequency",
      col="grey50",
      border="white")
+
+#QUESTION NUMBER 8
 
 #get precipitation for each year and site in the data
 #create new dataframe with just values of interest- sum of precip
@@ -275,5 +284,12 @@ hist(sumyearlyPRCP$Precipitation[sumyearlyPRCP$Site == "ABERDEEN, WA US"],
      col="grey50",
      border="white")
 
-#create new dataframe with just values of interest- mean of precip
+#QUESTION NUMBER 9
+
+#create new dataframe with just values of interest- mean of annual precip
 meanyearlyPRCP <- aggregate(datW$PRCP ~ datW$NAME+datW$year, FUN="mean",na.rm=TRUE)
+#compare just the overall average precipitation to overall avg temp
+#first aggregate avg precipitation
+meanPRCP <- aggregate(datW$PRCP ~ datW$NAME, FUN = "mean", na.rm=TRUE)
+#second compare the values side by side by creating a new data frame
+comparePRCPTEMP<- data.frame(meanPRCP,averageTemp$MAAT)
