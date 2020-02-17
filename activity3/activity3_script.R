@@ -31,6 +31,9 @@ assert(length(a) == length(b), "error: unequal length")
 #specify the the NA is designated differently
 datW <- read.csv("C:\\Users\\acanaan\\Documents\\GitHub\\GEOG331\\a03\\bewkes_weather.csv",
                  na.strings=c("#N/A"), skip=3, header=FALSE)
+
+#upload data from mac
+datW <- read.csv("~/Desktop/GitHub/GEOG331/a03/bewkes_weather.csv", na.strings=c("#N/A"), skip=3, header=FALSE)
 #preview data
 print(datW[1,])
 
@@ -39,6 +42,9 @@ print(datW[1,])
 sensorInfo <-   read.csv("y:\\Students\\hkropp\\a03\\bewkes_weather.csv",
                          na.strings=c("#N/A"), nrows=2)
 
+#upload data from mac
+sensorInfo <-   read.csv("~/Desktop/GitHub/GEOG331/a03/bewkes_weather.csv",
+                         na.strings=c("#N/A"), nrows=2)
 print(sensorInfo)
 
 #get column names from sensorInfo table
@@ -128,13 +134,33 @@ points(datW$DD[datW$precipitation > 0], datW$precipitation[datW$precipitation > 
 points(datW$DD[lightscale > 0], lightscale[lightscale > 0],
        col= "tomato3", pch=19)
 
+#test using assert function from part 1
+assert(length(lightscale)==length(datW$precipitation), "error: unequal length")
+
+#QUESTION 6
+
 #filter out storms in wind and air temperature measurements
-# filter all values with lightning that coincides with rainfall greater than 2mm or only rainfall over 5 mm.    
+#filter all values with lightning that coincides with rainfall greater than 2mm or only rainfall over 5 mm.    
 #create a new air temp column
 datW$air.tempQ2 <- ifelse(datW$precipitation  >= 2 & datW$lightning.acvitivy >0, NA,
                           ifelse(datW$precipitation > 5, NA, datW$air.tempQ1))
 
-#QUESTION 6
+#remove suspect measurements from wind speed measurements in new column
+datW$wind.speed2 <- ifelse(datW$precipitation  >= 2 & datW$lightning.acvitivy >0, NA,
+                           ifelse(datW$precipitation > 5, NA, datW$wind.speed))
 
+#test using assert to verify data is filtered as expected
+for (i in length(datW$wind.speed))
+{
+  assert(datW$wind.speed[i] == datW$wind.speed2[i], "error: not filtered")
+}
+
+assert(length(which(is.na(datW$wind.speed)))!=length(which(is.na(datW$wind.speed2))), "error: not filtered")
+
+#plot with both lines and points of windspeed with new data
+plot(datW$DD, datW$precipitation, xlab = "Day of Year", ylab= "Precipitation and Lightning",
+     type = "n")
+points(datW$wind.speed, col= "tomato3")
+points(datW$wind.speed2, col= "green")
 
 #FINISHING YOUR QA/QC
