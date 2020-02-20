@@ -33,7 +33,8 @@ datW <- read.csv("C:\\Users\\acanaan\\Documents\\GitHub\\GEOG331\\a03\\bewkes_we
                  na.strings=c("#N/A"), skip=3, header=FALSE)
 
 #upload data from mac
-datW <- read.csv("~/Desktop/GitHub/GEOG331/a03/bewkes_weather.csv", na.strings=c("#N/A"), skip=3, header=FALSE)
+#datW <- read.csv("~/Desktop/GitHub/GEOG331/a03/bewkes_weather.csv", na.strings=c("#N/A"), skip=3, header=FALSE)
+
 #preview data
 print(datW[1,])
 
@@ -43,8 +44,8 @@ sensorInfo <-   read.csv("y:\\Students\\hkropp\\a03\\bewkes_weather.csv",
                          na.strings=c("#N/A"), nrows=2)
 
 #upload data from mac
-sensorInfo <-   read.csv("~/Desktop/GitHub/GEOG331/a03/bewkes_weather.csv",
-                         na.strings=c("#N/A"), nrows=2)
+#sensorInfo <-   read.csv("~/Desktop/GitHub/GEOG331/a03/bewkes_weather.csv",na.strings=c("#N/A"), nrows=2)
+
 print(sensorInfo)
 
 #get column names from sensorInfo table
@@ -150,31 +151,78 @@ datW$wind.speed2 <- ifelse(datW$precipitation  >= 2 & datW$lightning.acvitivy >0
                            ifelse(datW$precipitation > 5, NA, datW$wind.speed))
 
 #test using assert to verify data is filtered as expected
-for (i in length(datW$wind.speed))
+for (i in length(datW$wind.speed2))
 {
-  assert(datW$wind.speed[i] == datW$wind.speed2[i], "error: not filtered")
+  assert(is.na(datW$wind.speed2[i])==TRUE, "filtered")
 }
 
-assert(length(which(is.na(datW$wind.speed)))!=length(which(is.na(datW$wind.speed2))), "error: not filtered")
-
 #plot with both lines and points of windspeed with new data
-plot(datW$DD, datW$wind.speed, xlab = "Day of Year", ylab= "Wind Speed and Adjusted Wind Speed",
+plot(datW$DD, datW$wind.speed2, xlab = "Day of Year", ylab= "Wind Speed",
      type = "n")
-points(datW$DD[datW$wind.speed > 0], datW$wind.speed[datW$wind.speed >0], col= "tomato3", pch = 5)
-lines(datW$DD[datW$wind.speed > 0], datW$wind.speed[datW$wind.speed >0], col= "tomato3", pch = 5)
-points(datW$DD[datW$wind.speed2 > 0], datW$wind.speed2[datW$wind.speed2 >0], col= "green")
-lines(datW$DD[datW$wind.speed2 > 0], datW$wind.speed2[datW$wind.speed2 >0], col= "green")
+#points(datW$DD[datW$wind.speed > 0], datW$wind.speed[datW$wind.speed >0], col= "tomato3", pch = 5)
+#lines(datW$DD[datW$wind.speed > 0], datW$wind.speed[datW$wind.speed >0], col= "tomato3", pch = 5)
+points(datW$wind.speed2[datW$wind.speed2 >0], col= "blue")
+lines(datW$wind.speed2[datW$wind.speed2 >0], col= "blue")
 
 #FINISHING YOUR QA/QC
 
 #QUESTION 7
 
+#check the day that the outage occured, datW$doy and datW$soil.moisture
+View(datW)
 
+#check soil moisture with precipitation, blank plot and add the points
+plot(datW$doy[datW$doy>=185 & datW$doy<=193], datW$precipitation[datW$doy>=185 & datW$doy<=193], xlab = "Day of Year", ylab = "Precipitation", type="n")
+points(datW$soil.moisture[datW$doy>=185 & datW$doy<=193], col="blue")
+points(datW$precipitation[datW$doy>=185 & datW$doy<=193], col="red")
+
+#check soil temp with air temp, blank plot and add the points
+plot(datW$doy[datW$doy>=185 & datW$doy<=193], datW$air.tempQ2[datW$doy>=185 & datW$doy<=193], xlab = "Day of Year", ylab = "Temperature", type="n")
+points(datW$soil.temp[datW$doy>=185 & datW$doy<=193], col="blue")
+points(datW$air.tempQ2[datW$doy>=185 & datW$doy<=193], col="red")
 
 #QUESTION 8
 
 #table with average air temperature, wind speed, soil moisture, soil temperature, total precipitation
 
+#calculate desired averages and sums, with given number of observations
+#average air temperature with no na's
+avg_air_temp<-subset(datW$air.tempQ2, is.na(datW$air.tempQ2)==FALSE)
+
+#average wind speed with no na's
+avg_wind_speed<-subset(datW$wind.speed2, is.na(datW$wind.speed2)==FALSE)
+
+#average soil moisture with no na's
+avg_soil_moist<-subset(datW$soil.moisture, is.na(datW$soil.moisture)==FALSE)
+
+#average soil temperature with no na's
+avg_soil_temp<-subset(datW$soil.temp, is.na(datW$soil.temp)==FALSE)
+
+#total precipitation with no na's
+sum_prcp<-subset(datW$precipitation, is.na(datW$precipitation)==FALSE)
+
+
+#create table
+info_table<-data.frame(round(mean(avg_air_temp),1), round(mean(avg_wind_speed),1), round(mean(avg_soil_moist),2), round(mean(avg_soil_temp),0), round(sum(sum_prcp),2))
+#rename column names
+names(info_table) <- c("Average Air Temperature", "Average Wind Speed", "Average Soil Moisture", "Average Soil Temperature", "Total Precipitation")
+print(info_table)
+#date range of data
+
+#date range of air temperautre
+range(datW$doy[is.na(datW$air.tempQ2)==FALSE])
+
+#date range of wind speed
+range(datW$doy[is.na(datW$wind.speed2)==FALSE])
+
+#date range of soil moisture
+range(datW$doy[is.na(datW$soil.moisture)==FALSE])
+
+#date range of soil temperature
+range(datW$doy[is.na(datW$soil.temp)==FALSE])
+
+#date range of precipitation
+range(datW$doy[is.na(datW$precipitation)==FALSE])
 
 #QUESTION 9
 
@@ -183,7 +231,7 @@ par(mfrow = c(2,2))
 #soil moisture plot
 plot(datW$DD, datW$soil.moisture, xlab = "Day of Year", ylab = "Soil Moisture", col = "blue")
 #air temperature plot
-plot(datW$DD, datW$air.temperature, xlab = "Day of Year", ylab = "Air Temperature", col = "darkgreen")
+plot(datW$DD, datW$air.tempQ2, xlab = "Day of Year", ylab = "Air Temperature", col = "darkgreen")
 #soil temperature plot
 plot(datW$DD, datW$soil.temp, xlab = "Day of Year", ylab = "Soil Temperature", col = "purple")
 #precipitation plot
