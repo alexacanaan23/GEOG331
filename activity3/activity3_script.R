@@ -207,6 +207,15 @@ info_table<-data.frame(round(mean(avg_air_temp),1), round(mean(avg_wind_speed),1
 #rename column names
 names(info_table) <- c("Average Air Temperature", "Average Wind Speed", "Average Soil Moisture", "Average Soil Temperature", "Total Precipitation")
 print(info_table)
+
+#download packages to allow me to export the table
+library(data.table)
+library(dplyr)
+library(formattable)
+library(tidyr)
+#print table in neat format
+formattable(info_table)
+
 #date range of data
 
 #date range of air temperautre
