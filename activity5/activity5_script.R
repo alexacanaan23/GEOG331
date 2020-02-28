@@ -48,14 +48,14 @@ datD$hour <- hour(timesD ) + (minute(timesD )/60)
 datD$decDay <- datD$doy + (datD$hour/24)
 #calculate a decimal year, but account for leap year
 datD$decYear <- ifelse(leap_year(datD$year),datD$year + (datD$decDay/366),
-                       datD$year + (datD$decDay/365))
+                       datD$year + (datD$decDay-1/365))
 #calculate times for datP                       
 datP$hour <- hour(dateP ) + (minute(dateP )/60)
 #get full decimal time
 datP$decDay <- datP$doy + (datP$hour/24)
 #calculate a decimal year, but account for leap year
 datP$decYear <- ifelse(leap_year(datP$year),datP$year + (datP$decDay/366),
-                       datP$year + (datP$decDay/365))      
+                       datP$year + (datP$decDay-1/365))      
 
 
 #plot discharge
