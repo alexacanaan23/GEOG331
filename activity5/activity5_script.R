@@ -60,6 +60,11 @@ datP$decDay <- datP$doy + (datP$hour/24)
 #calculate a decimal year, but account for leap year
 datP$decYear <- ifelse(leap_year(datP$year),datP$year + (datP$decDay/366),
                        datP$year + (datP$decDay-1/365))      
+#format precipitaiton date column
+datP$day<-ymd_hm(datP$DATE)
+#strip time
+datP$dateonly<-format(as.Date(datP$day), "%m/%d/%Y")
+
 
 
 #plot discharge
@@ -202,20 +207,32 @@ axis(2, seq(0,180, by=30),
 #of precipitation measurements
 
 #give each obs a count
-datD["Count"]<-1
+datP["Count"]<-1
 
 #dataframe with all days and their number of observations
-datC<-aggregate(datD[c("Count")], by=list(datD$date), FUN="sum")
-
-#check number of observations there should be per day
-4*24
+datC<-aggregate(datP[c("Count")], by=list(datP$dateonly), FUN="sum")
 
 #days with a full 24 hours of precipitation measurements
-datC1<-subset(datC, datC$Count>=96)
+datC1<-subset(datC, datC$Count==24)
 
-#create a data frame with only days with full measures
-datD1<-subset(datD, datD$date %in% datC1$Group.1)
+#create a data frame with only days with full measures, start FALSE
+datP["Full"]<-FALSE
 
+#indicate if obs is part of day of full measure
+datP <- transform(datP, Full= ifelse(datP$dateonly %in% datC1$Group.1, TRUE, FALSE))
+
+#dataframe that indicates what days have full 24 hr measure with discharge data
+datCombine<- datD
+datCombine<-transform(datCombine, Full= ifelse(datCombine$date %in% datC1$Group.1, TRUE, FALSE))
+  
+#plot of discharge measures
+library(ggplot2)
+ggplot(dat=datCombine, aes(x=date, y=discharge, fill=Full))+
+  geom_histogram()+
+  title("Discharge Measurements")+
+  xlab("Date")+
+  ylab("Discharge")+
+  theme_bw()
 
 #subsest discharge and precipitation within range of interest
 hydroD <- datD[datD$doy >= 248 & datD$doy < 250 & datD$year == 2011,]
