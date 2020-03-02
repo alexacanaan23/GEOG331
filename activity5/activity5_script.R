@@ -195,11 +195,26 @@ axis(2, seq(0,180, by=30),
      seq(0,180, by=30),
      las = 2)#show ticks at 90 degree angle
 
-#QUESTION 6
+#QUESTION 6 - NO CODE
 
 #QUESTION 7
 #create a dataframe that indicates what days have a full 24 hours
 #of precipitation measurements
+
+#give each obs a count
+datD["Count"]<-1
+
+#dataframe with all days and their number of observations
+datC<-aggregate(datD[c("Count")], by=list(datD$date), FUN="sum")
+
+#check number of observations there should be per day
+4*24
+
+#days with a full 24 hours of precipitation measurements
+datC1<-subset(datC, datC$Count>=96)
+
+#create a data frame with only days with full measures
+datD1<-subset(datD, datD$date %in% datC1$Group.1)
 
 
 #subsest discharge and precipitation within range of interest
