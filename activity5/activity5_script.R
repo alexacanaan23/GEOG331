@@ -66,7 +66,6 @@ datP$day<-ymd_hm(datP$DATE)
 datP$dateonly<-format(as.Date(datP$day), "%m/%d/%Y")
 
 
-
 #plot discharge
 plot(datD$decYear, datD$discharge, type="l", xlab="Year", ylab=expression(paste("Discharge ft"^"3 ","sec"^"-1")))
 
@@ -194,8 +193,8 @@ polygon(c(aveF$doy, rev(aveF$doy)),#x coordinates
         border=NA#no border
 )  
 lines(datD2017$doy, datD2017$discharge, col="red")
-axis(1, seq(0,360, by=40), #tick intervals
-     lab=seq(0,360, by=40)) #tick labels
+axis(1, at= c(1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335), #tick intervals
+     labels = c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")) #tick labels
 axis(2, seq(0,180, by=30),
      seq(0,180, by=30),
      las = 2)#show ticks at 90 degree angle
@@ -214,8 +213,10 @@ datC<-aggregate(datP[c("Count")], by=list(datP$dateonly), FUN="sum")
 
 #days with a full 24 hours of precipitation measurements
 datC1<-subset(datC, datC$Count==24)
+#check length = 60
+length(datC1$Group.1)
 
-#create a data frame with only days with full measures, start FALSE
+#indicate only days with full measures, start with all = FALSE
 datP["Full"]<-FALSE
 
 #indicate if obs is part of day of full measure
@@ -224,15 +225,19 @@ datP <- transform(datP, Full= ifelse(datP$dateonly %in% datC1$Group.1, TRUE, FAL
 #dataframe that indicates what days have full 24 hr measure with discharge data
 datCombine<- datD
 datCombine<-transform(datCombine, Full= ifelse(datCombine$date %in% datC1$Group.1, TRUE, FALSE))
-  
+datCombine$Full <- factor(datCombine$Full)
+
+#range of days of full measure is from 2007 to 2013
+datCombine<-subset(datCombine, datCombine$year>=2007 & datCombine$year<=2013)
 #plot of discharge measures
 library(ggplot2)
 ggplot(dat=datCombine, aes(x=date, y=discharge, fill=Full))+
-  geom_histogram()+
-  title("Discharge Measurements")+
+  geom_point(aes(color = Full))+
+  ggtitle("Discharge Measurements")+
   xlab("Date")+
   ylab("Discharge")+
-  theme_bw()
+  theme_bw()+
+  theme(axis.text.x = element_blank())
 
 #subsest discharge and precipitation within range of interest
 hydroD <- datD[datD$doy >= 248 & datD$doy < 250 & datD$year == 2011,]
@@ -270,7 +275,40 @@ for(i in 1:nrow(hydroP)){
 }
 
 #QUESTION 8
+#subsest discharge and precipitation within range of interest
+hydro1D <- datD[datD$doy >= 1 & datD$doy < 3 & datD$year == 2011,]
+hydro1P <- datP[datP$doy >= 1 & datP$doy < 3 & datP$year == 2011,]
 
+min(hydro1D$discharge)
+
+#get minimum and maximum range of discharge to plot
+#go outside of the range so that it's easy to see high/low values
+#floor rounds down the integer
+yl <- floor(min(hydro1D$discharge))-1
+#celing rounds up to the integer
+yh <- ceiling(max(hydro1D$discharge))+1
+#minimum and maximum range of precipitation to plot
+pl <- 0
+pm <-  ceiling(max(hydro1P$HPCP))+.5
+#scale precipitation to fit on the 
+hydro1P$pscale <- (((yh-yl)/(pm-pl)) * hydro1P$HPCP) + yl
+
+par(mai=c(1,1,1,1))
+#make plot of discharge
+plot(hydro1D$decDay,
+     hydro1D$discharge, 
+     type="l", 
+     ylim=c(yl,yh), 
+     lwd=2,
+     xlab="Day of year", 
+     ylab=expression(paste("Discharge ft"^"3 ","sec"^"-1")))
+#add bars to indicate precipitation 
+for(i in 1:nrow(hydro1P)){
+  polygon(c(hydro1P$decDay[i]-0.017,hydro1P$decDay[i]-0.017,
+            hydro1P$decDay[i]+0.017,hydro1P$decDay[i]+0.017),
+          c(yl,hydro1P$pscale[i],hydro1P$pscale[i],yl),
+          col=rgb(0.392, 0.584, 0.929,.2), border=NA)
+}
 
 library(ggplot2)
 #specify year as a factor
@@ -281,3 +319,50 @@ ggplot(data= datD, aes(yearPlot,discharge)) +
 #make a violin plot
 ggplot(data= datD, aes(yearPlot,discharge)) + 
   geom_violin()
+
+
+#QUESTION 9
+#make a new column to indicate season
+datD$season<-NA
+
+#indicate season for 2016
+#indicate winter for days before march 19
+datD$season[datD$year==2016 & datD$doy<79]<-"Winter"
+#indicate spring for days between march 3 and june 20
+datD$season[datD$year==2016 & datD$doy>=79 & datD$doy<172]<-"Spring"
+#indicate summer for days between june 20 and september 22
+datD$season[datD$year==2016 & datD$doy>=172 & datD$doy<266]<-"Summer"
+#indicate fall for days between september 22 and december 21
+datD$season[datD$year==2016 & datD$doy>=266 & datD$doy<356]<-"Fall"
+#indicate winter for days including december 21 and on
+datD$season[datD$year==2016 & datD$doy>=356]<-"Winter"
+
+#indicate season for 2017
+#indicate winter for days before march 3
+datD$season[datD$year==2017 & datD$doy<79]<-"Winter"
+#indicate spring for days between march 3 and june 20
+datD$season[datD$year==2017 & datD$doy>=79 & datD$doy<171]<-"Spring"
+#indicate summer for days between june 20 and september 22
+datD$season[datD$year==2017 & datD$doy>=171 & datD$doy<265]<-"Summer"
+#indicate fall for days between september 22 and december 21
+datD$season[datD$year==2017 & datD$doy>=265 & datD$doy<355]<-"Fall"
+#indicate winter for days including december 21 and on
+datD$season[datD$year==2017 & datD$doy>=355]<-"Winter"
+
+#ggplot by season for 2016 for discharge
+ggdat<- subset(datD, year==2016)
+ggplot(data= ggdat, aes(season,discharge)) + 
+  geom_violin(fill="pink")+
+  ggtitle("Discharge for 2016 by Season")+
+  xlab("Season")+
+  ylab("Discharge")+
+  theme_bw()
+
+#ggplot by season for 2017 for discharge
+ggdat1<- subset(datD, year==2017)
+ggplot(data= ggdat1, aes(season,discharge)) + 
+  geom_violin(fill="purple")+
+  ggtitle("Discharge for 2017 by Season")+
+  xlab("Season")+
+  ylab("Discharge")+
+  theme_bw()
