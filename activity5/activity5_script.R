@@ -10,7 +10,7 @@ library(lubridate)
 datH <- read.csv("y:\\Data\\activities\\a05\\stream_flow_data.csv",
                  na.strings = c("Eqp"))
 #read data on the mac
-datH <- read.csv("~/Desktop/GitHub/GEOG331/a05/stream_flow_data.csv", na.strings = c("Eqp"))
+#datH <- read.csv("~/Desktop/GitHub/GEOG331/a05/stream_flow_data.csv", na.strings = c("Eqp"))
 #preview data
 head(datH)
 
@@ -18,7 +18,7 @@ head(datH)
 #hourly precipitation is in mm
 datP <- read.csv("y:\\Data\\activities\\a05\\2049867.csv")
 #read data on the mac
-datP <- read.csv("~/Desktop/GitHub/GEOG331/a05/2049867.csv")
+#datP <- read.csv("~/Desktop/GitHub/GEOG331/a05/2049867.csv")
 #preview data
 head(datP)
 
@@ -180,7 +180,7 @@ par(mai=c(1,1,1,1))
 #make plot
 plot(aveF$doy,aveF$dailyAve, 
      type="l", 
-     xlab="Year", 
+     xlab="Month", 
      ylab=expression(paste("Discharge ft"^"3 ","sec"^"-1")),
      lwd=2,
      ylim=c(0,180),
@@ -233,9 +233,9 @@ datCombine<-subset(datCombine, datCombine$year>=2007 & datCombine$year<=2013)
 library(ggplot2)
 ggplot(dat=datCombine, aes(x=date, y=discharge, fill=Full))+
   geom_point(aes(color = Full))+
-  ggtitle("Discharge Measurements")+
+  ggtitle("Discharge")+
   xlab("Date")+
-  ylab("Discharge")+
+  ylab(expression(paste("Discharge ft"^"3 ","sec"^"-1")))+
   theme_bw()+
   theme(axis.text.x = element_blank())
 
@@ -264,7 +264,7 @@ plot(hydroD$decDay,
      type="l", 
      ylim=c(yl,yh), 
      lwd=2,
-     xlab="Day of year", 
+     xlab="Day of Year", 
      ylab=expression(paste("Discharge ft"^"3 ","sec"^"-1")))
 #add bars to indicate precipitation 
 for(i in 1:nrow(hydroP)){
@@ -300,7 +300,7 @@ plot(hydro1D$decDay,
      type="l", 
      ylim=c(yl,yh), 
      lwd=2,
-     xlab="Day of year", 
+     xlab="Day of Year", 
      ylab=expression(paste("Discharge ft"^"3 ","sec"^"-1")))
 #add bars to indicate precipitation 
 for(i in 1:nrow(hydro1P)){
@@ -355,7 +355,7 @@ ggplot(data= ggdat, aes(season,discharge)) +
   geom_violin(fill="pink")+
   ggtitle("Discharge for 2016 by Season")+
   xlab("Season")+
-  ylab("Discharge")+
+  ylab(expression(paste("Discharge ft"^"3 ","sec"^"-1")))+
   theme_bw()
 
 #ggplot by season for 2017 for discharge
@@ -364,5 +364,5 @@ ggplot(data= ggdat1, aes(season,discharge)) +
   geom_violin(fill="purple")+
   ggtitle("Discharge for 2017 by Season")+
   xlab("Season")+
-  ylab("Discharge")+
+  ylab(expression(paste("Discharge ft"^"3 ","sec"^"-1")))+
   theme_bw()
