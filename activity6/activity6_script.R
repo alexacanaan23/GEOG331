@@ -37,3 +37,15 @@ g1966@proj4string
 g1966@polygons[[1]]@Polygons[[1]]
 
 #QUESTION 1 - NO CODE
+
+#WORKING WITH RASTER DATA
+#read in rgb imagery from landsat
+redL <- raster("Y:\\Students\\hkropp\\a06\\glacier_09_05_14\\l08_red.tif")
+greenL <- raster("Y:\\Students\\hkropp\\a06\\glacier_09_05_14\\l08_green.tif")
+blueL <- raster("Y:\\Students\\hkropp\\a06\\glacier_09_05_14\\l08_blue.tif")
+
+#check coordinate system
+redL@crs
+
+#make a brick that stacks all layers
+rgbL <- brick(redL, greenL, blueL)
