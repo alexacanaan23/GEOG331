@@ -14,13 +14,17 @@ library(plyr)
 
 #read in shapefiles
 #readOGR in rgdal does this
-g1966 <- readOGR("Y:\\Students\\hkropp\\a06\\GNPglaciers\\GNPglaciers_1966.shp")
+#g1966 <- readOGR("Y:\\Students\\hkropp\\a06\\GNPglaciers\\GNPglaciers_1966.shp")
+g1966 <- readOGR("~/Desktop/GitHub/GEOG331/a06/GNPglaciers/GNPglaciers_1966.shp")
 plot(g1966,axes="TRUE")
-g1998 <- readOGR("Y:\\Students\\hkropp\\a06\\GNPglaciers\\GNPglaciers_1998.shp")
+#g1998 <- readOGR("Y:\\Students\\hkropp\\a06\\GNPglaciers\\GNPglaciers_1998.shp")
+g1998 <- readOGR("~/Desktop/GitHub/GEOG331/a06/GNPglaciers/GNPglaciers_1998.shp")
 plot(g1998,axes="TRUE")
-g2005 <- readOGR("Y:\\Students\\hkropp\\a06\\GNPglaciers\\GNPglaciers_2005.shp")
+#g2005 <- readOGR("Y:\\Students\\hkropp\\a06\\GNPglaciers\\GNPglaciers_2005.shp")
+g2005 <- readOGR("~/Desktop/GitHub/GEOG331/a06/GNPglaciers/GNPglaciers_2005.shp")
 plot(g2005,axes="TRUE")
-g2015 <- readOGR("Y:\\Students\\hkropp\\a06\\GNPglaciers\\GNPglaciers_2015.shp")
+#g2015 <- readOGR("Y:\\Students\\hkropp\\a06\\GNPglaciers\\GNPglaciers_2015.shp")
+g2015 <- readOGR("~/Desktop/GitHub/GEOG331/a06/GNPglaciers/GNPglaciers_2015.shp")
 plot(g2015,axes="TRUE")
 str(g2015)
 
@@ -54,9 +58,12 @@ g2015@data$GLACNAME <- ifelse(g2015@data$GLACNAME == "North Swiftcurrent Glacier
 
 #WORKING WITH RASTER DATA
 #read in rgb imagery from landsat
-redL <- raster("Y:\\Students\\hkropp\\a06\\glacier_09_05_14\\l08_red.tif")
-greenL <- raster("Y:\\Students\\hkropp\\a06\\glacier_09_05_14\\l08_green.tif")
-blueL <- raster("Y:\\Students\\hkropp\\a06\\glacier_09_05_14\\l08_blue.tif")
+#redL <- raster("Y:\\Students\\hkropp\\a06\\glacier_09_05_14\\l08_red.tif")
+redL <- raster("~/Desktop/GitHub/GEOG331/a06/glacier_09_05_14/l08_red.tif")
+#greenL <- raster("Y:\\Students\\hkropp\\a06\\glacier_09_05_14\\l08_green.tif")
+greenL <- raster("~/Desktop/GitHub/GEOG331/a06/glacier_09_05_14/l08_green.tif")
+#blueL <- raster("Y:\\Students\\hkropp\\a06\\glacier_09_05_14\\l08_blue.tif")
+blueL <- raster("~/Desktop/GitHub/GEOG331/a06/glacier_09_05_14/l08_blue.tif")
 
 #check coordinate system
 redL@crs
@@ -91,8 +98,7 @@ ndviYear <- seq(2003,2016)
 #read all files into a list
 NDVIraster <- list() 
 for(i in 1:length(ndviYear)){
-  NDVIraster[[i]] <- raster(paste0("Y:\\Students\\hkropp\\a06\\NDVI\\NDVI_",ndviYear[i],".tif"))
-  
+  NDVIraster[[i]] <- raster(paste0("~/Desktop/GitHub/GEOG331/a06/NDVI/NDVI_",ndviYear[i],".tif"))
 }
 
 #look at a single raster fn from 2003
@@ -106,6 +112,8 @@ NDVIraster[[1]]@crs
 plot(NDVIraster[[1]])
 
 #QUESTION 3
+
+#plot NDVI w/1996 polygons
 #par(mai=c(1,1,1,1))
 par(mfrow = c(1,2))
 plot(NDVIraster[[1]], axes=TRUE, xaxis="i", yaxis="i")
@@ -122,6 +130,12 @@ g2005p <- spTransform(g2005,NDVIraster[[1]]@crs)
 g2015p <- spTransform(g2015,NDVIraster[[1]]@crs)
 
 #QUESTION 4
+
+#plot map w/ max NDVI and glaciers in 2015
+par(mfrow = c(1,2))
+plot(max(NDVIraster[[13]]))
+plot(g2015p, col="transparent", border="black")
+
 
 #calculate area for all polygons
 #add directly into data table for each shapefile
@@ -153,6 +167,22 @@ for(i in 2:39){
 } 
 
 #QUESTION 5
+
+#calculate the percentage change in area b/w 1966 and 2015
+#new columns
+gAll$pct.change98<-NA
+gAll$pct.change05<-NA
+gAll$pct.change15<-NA
+
+#actual equation
+for (i in 1:39){
+  gAll$pct.change98[i]<-((gAll$a1998m.sq[i]-gAll$a1966m.sq[i])/(gAll$a1966m.sq[i]))*100
+  gAll$pct.change05[i]<-((gAll$a2005m.sq[i]-gAll$a1998m.sq[i])/(gAll$a1998m.sq[i]))*100
+  gAll$pct.change15[i]<-((gAll$a2015m.sq[i]-gAll$a2005m.sq[i])/(gAll$a2005m.sq[i]))*100
+}
+
+#spplot maps glaciers in 2015 showing % change
+spplot(g2015, "pct.change15")
 
 #VISUALIZE GLACIER LOSS - GDIFFERENCE REMOVES OVERLAPPING AREAS
 diffPoly <- gDifference(g1966p, g2015p)
