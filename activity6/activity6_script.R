@@ -14,16 +14,15 @@ library(plyr)
 
 #read in shapefiles
 #readOGR in rgdal does this
-#g1966 <- readOGR("Y:\\Students\\hkropp\\a06\\GNPglaciers\\GNPglaciers_1966.shp")
 g1966 <- readOGR("~/Desktop/GitHub/GEOG331/a06/GNPglaciers/GNPglaciers_1966.shp")
 plot(g1966,axes="TRUE")
-#g1998 <- readOGR("Y:\\Students\\hkropp\\a06\\GNPglaciers\\GNPglaciers_1998.shp")
+
 g1998 <- readOGR("~/Desktop/GitHub/GEOG331/a06/GNPglaciers/GNPglaciers_1998.shp")
 plot(g1998,axes="TRUE")
-#g2005 <- readOGR("Y:\\Students\\hkropp\\a06\\GNPglaciers\\GNPglaciers_2005.shp")
+
 g2005 <- readOGR("~/Desktop/GitHub/GEOG331/a06/GNPglaciers/GNPglaciers_2005.shp")
 plot(g2005,axes="TRUE")
-#g2015 <- readOGR("Y:\\Students\\hkropp\\a06\\GNPglaciers\\GNPglaciers_2015.shp")
+
 g2015 <- readOGR("~/Desktop/GitHub/GEOG331/a06/GNPglaciers/GNPglaciers_2015.shp")
 plot(g2015,axes="TRUE")
 str(g2015)
@@ -58,11 +57,8 @@ g2015@data$GLACNAME <- ifelse(g2015@data$GLACNAME == "North Swiftcurrent Glacier
 
 #WORKING WITH RASTER DATA
 #read in rgb imagery from landsat
-#redL <- raster("Y:\\Students\\hkropp\\a06\\glacier_09_05_14\\l08_red.tif")
 redL <- raster("~/Desktop/GitHub/GEOG331/a06/glacier_09_05_14/l08_red.tif")
-#greenL <- raster("Y:\\Students\\hkropp\\a06\\glacier_09_05_14\\l08_green.tif")
 greenL <- raster("~/Desktop/GitHub/GEOG331/a06/glacier_09_05_14/l08_green.tif")
-#blueL <- raster("Y:\\Students\\hkropp\\a06\\glacier_09_05_14\\l08_blue.tif")
 blueL <- raster("~/Desktop/GitHub/GEOG331/a06/glacier_09_05_14/l08_blue.tif")
 
 #check coordinate system
@@ -150,6 +146,8 @@ gAllp2 <- join(gAllp1,g2005p@data, by="GLACNAME", type="full")
 gAll <- join(gAllp2,g2015p@data, by="GLACNAME", type="full")
 
 #make a plot of the area for each glacier
+par(mfrow = c(1,1))
+par(mai=c(1,1,1,1))
 plot(c(1966,1998,2005,2015), 
      c(gAll$a1966m.sq[1],gAll$a1998m.sq[1], gAll$a2005m.sq[1],gAll$a2015m.sq[1]),
      type="b", 
@@ -170,29 +168,46 @@ for(i in 2:39){
 
 #calculate the percentage change in area b/w 1966 and 2015
 #new columns
-gAll$pct.change98<-NA
-gAll$pct.change05<-NA
 gAll$pct.change15<-NA
 
 #actual equation
 for (i in 1:39){
-  gAll$pct.change98[i]<-((gAll$a1998m.sq[i]-gAll$a1966m.sq[i])/(gAll$a1966m.sq[i]))*100
-  gAll$pct.change05[i]<-((gAll$a2005m.sq[i]-gAll$a1998m.sq[i])/(gAll$a1998m.sq[i]))*100
-  gAll$pct.change15[i]<-((gAll$a2015m.sq[i]-gAll$a2005m.sq[i])/(gAll$a2005m.sq[i]))*100
+  gAll$pct.change15[i]<-((gAll$a2015m.sq[i]-gAll$a1966m.sq[i])/(gAll$a1966m.sq[i]))*100
+  g2015p$pct.change15[i]<-gAll$pct.change15[i]
 }
 
 #spplot maps glaciers in 2015 showing % change
-spplot(g2015, "pct.change15")
+
+par(mfrow = c(1,1))
+par(mai=c(1,1,1,1))
+spplot(g2015p, "pct.change15")
 
 #VISUALIZE GLACIER LOSS - GDIFFERENCE REMOVES OVERLAPPING AREAS
 diffPoly <- gDifference(g1966p, g2015p)
 plot(diffPoly)
 
 #plot with NDVI
+par(mfrow = c(1,1))
+par(mai=c(0.5,0.5,0.5,0.5))
 plot(NDVIraster[[13]], axes=FALSE, box=FALSE)
 plot(diffPoly,col="black", border=NA,add=TRUE)
 
 #QUESTION 6
+
+#find glacier with largest % loss
+min(gAll$pct.change15) #-84.72067
+which.min(gAll$pct.change15) #5
+gAll$GLACNAME[5] #"Boulder Glacier"
+
+#display the extent of glacial loss for all years
+g1966p_boulder<-subset(g1966p, GLACNAME=="Boulder Glacier")
+g2015p_boulder<-subset(g2015p, GLACNAME=="Boulder Glacier")
+diffboulder<-gDifference(g1966p_boulder,g2015p_boulder)
+
+plot(g1966p_boulder,
+     main="84.72% Glacial Loss of Boulder Glacier")
+plot(g2015p_boulder,add=TRUE)
+plot(diffboulder, col="black",border=NA, add=TRUE)
 
 #RASTER DATA ANALYSIS: DOES MORE VEGETATION GROW WITH GLACIAL RETREAT?
 #extract NDVI values
