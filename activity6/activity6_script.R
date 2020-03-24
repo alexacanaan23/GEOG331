@@ -242,7 +242,8 @@ NDVIfit <- calc(NDVIstack,fun)
 #plot the change in NDVI
 plot(NDVIfit, axes=FALSE)
 
-#QUESTION 7
+#QUESTION 7 - NO CODE
+
 #buffer glaciers
 glacier500m <- gBuffer(g1966p,#data to buffer
                        byid=TRUE,#keeps original shape id 
@@ -262,9 +263,24 @@ glacRaster <- rasterize(g1966p, NDVIraster[[1]], field=g1966p@data$GLACNAME, bac
 glacZones <- buffRaster - glacRaster
 plot(glacZones)
 
-#QUESTION 8
+#QUESTION 8 - NO CODE
 
 meanChange <- zonal(NDVIfit, #NDVI function to summarize
                     glacZones,#raster with zones
                     "mean")#function to apply
 head(meanChange)
+
+#QUESTION 9 
+
+#add mean change in NDVI to the 2015 glacier polygons
+g2015p$meanchange <- meanChange[1:39]
+#plot where mean change in vegetation is color coded
+spplot(g2015p, "meanchange")
+
+#QUESTION 10 - NO CODE
+
+#QUESTION 11
+
+#QUESTION 12 - NO CODE
+
+#QUESTION 13 - NO CODE
