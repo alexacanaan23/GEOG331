@@ -204,9 +204,9 @@ g1966p_boulder<-subset(g1966p, GLACNAME=="Boulder Glacier")
 g2015p_boulder<-subset(g2015p, GLACNAME=="Boulder Glacier")
 diffboulder<-gDifference(g1966p_boulder,g2015p_boulder)
 
-plot(g1966p_boulder,
-     main="84.72% Glacial Loss of Boulder Glacier")
-plot(g2015p_boulder,add=TRUE)
+plot(g1966p_boulder, col="tan3",
+     main="84.72% Glacial Loss of Boulder Glacier", add=TRUE)
+plot(g2015p_boulder, col="tomato3",add=TRUE)
 plot(diffboulder, col="black",border=NA, add=TRUE)
 
 #RASTER DATA ANALYSIS: DOES MORE VEGETATION GROW WITH GLACIAL RETREAT?
@@ -257,7 +257,7 @@ buffRaster <- rasterize(glacier500m,#vector to convert to raster
                         background=0)#background value for missing data
 plot(buffRaster)
 
-#rasterize gralciers
+#rasterize glaciers
 glacRaster <- rasterize(g1966p, NDVIraster[[1]], field=g1966p@data$GLACNAME, background=0)
 #subtract buffer from original glacier
 glacZones <- buffRaster - glacRaster
@@ -280,6 +280,17 @@ spplot(g2015p, "meanchange")
 #QUESTION 10 - NO CODE
 
 #QUESTION 11
+
+#find average NDVI across all years
+#make raster dataset
+glacRaster1966 <- rasterize(g1966p, NDVIraster[[1]], field=g1966p@data$GLACNAME, background=0)
+glacRaster1998 <- rasterize(g1998p, NDVIraster[[1]], field=g1998p@data$GLACNAME, background=0)
+glacRaster2005 <- rasterize(g2005p, NDVIraster[[1]], field=g2005p@data$GLACNAME, background=0)
+glacRaster2015 <- rasterize(g2015p, NDVIraster[[1]], field=g2015p@data$GLACNAME, background=0)
+
+#pattern between glacier size and NDVI w/in 500m
+
+#make map that shows both recent glacier extent color coded with surround maximum ndvi average
 
 #QUESTION 12 - NO CODE
 
