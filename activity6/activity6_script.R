@@ -204,9 +204,10 @@ g1966p_boulder<-subset(g1966p, GLACNAME=="Boulder Glacier")
 g2015p_boulder<-subset(g2015p, GLACNAME=="Boulder Glacier")
 diffboulder<-gDifference(g1966p_boulder,g2015p_boulder)
 
-plot(g1966p_boulder, col="tan3",
-     main="84.72% Glacial Loss of Boulder Glacier", add=TRUE)
-plot(g2015p_boulder, col="tomato3",add=TRUE)
+plotRGB(rgbL, ext=c(271200,276600,5424500,5430000), stretch="lin", axes = TRUE,
+        main="84.72% Glacial Loss of Boulder Glacier")
+plot(g1966p_boulder, col="tan3", border=NA,add=TRUE)
+plot(g2015p_boulder, col="tomato3", border=NA, add=TRUE)
 plot(diffboulder, col="black",border=NA, add=TRUE)
 
 #RASTER DATA ANALYSIS: DOES MORE VEGETATION GROW WITH GLACIAL RETREAT?
