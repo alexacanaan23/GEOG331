@@ -284,13 +284,14 @@ spplot(g2015p, "meanchange")
 
 #find average NDVI across all years
 #make raster dataset
-glacRaster1966 <- rasterize(g1966p, NDVIraster[[1]], field=g1966p@data$GLACNAME, background=0)
-glacRaster1998 <- rasterize(g1998p, NDVIraster[[1]], field=g1998p@data$GLACNAME, background=0)
-glacRaster2005 <- rasterize(g2005p, NDVIraster[[1]], field=g2005p@data$GLACNAME, background=0)
-glacRaster2015 <- rasterize(g2015p, NDVIraster[[1]], field=g2015p@data$GLACNAME, background=0)
-
+NDVI_mean<-calc(NDVIstack,mean) #NDVI means 
+raster_data <- zonal(NDVI_mean, #NDVI function to summarize
+           glacZones, 
+           "mean")
+avg_mean<-mean(raster_data)
+avg_mean
 #pattern between glacier size and NDVI w/in 500m
-
+cbind(raster_data,)
 #make map that shows both recent glacier extent color coded with surround maximum ndvi average
 
 #QUESTION 12 - NO CODE
