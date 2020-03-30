@@ -282,18 +282,27 @@ spplot(g2015p, "meanchange")
 
 #QUESTION 11
 
-#find average NDVI across all years
-#make raster dataset
+#find mean NDVI for all time periods
 NDVI_mean<-calc(NDVIstack,mean) #NDVI means 
+#calculate mean for each zone for all time periods
 raster_data <- zonal(NDVI_mean, #NDVI function to summarize
            glacZones, 
-           "mean")
-avg_mean<-mean(raster_data)
-avg_mean
-#pattern between glacier size and NDVI w/in 500m
-cbind(raster_data,)
-#make map that shows both recent glacier extent color coded with surround maximum ndvi average
+           "mean") #calculate mean funciton
 
+#add to gAll dataset
+gAll$meanNDVI <- raster_data[-1,2]
+g2015p$meanNDVI <- raster_data[-1,2]
+
+#relationship between NDVI and area
+plot(gAll$meanNDVI, gAll$a2015m.sq, axes=TRUE, 
+     main= "Relationship between Mean NDVI and Glacier Size")
+
+#set colors
+g2015p$NDVIcol <- ifelse(g2015p$meanNDVI<0.4, "blue", "red")
+
+#make a map
+plot(NDVImean)
+plot(g2015p, add=TRUE, col=paste(g2015p$NDVIcol))
 #QUESTION 12 - NO CODE
 
 #QUESTION 13 - NO CODE
