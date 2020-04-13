@@ -209,6 +209,8 @@ rf_errorM$table
 rf_errorM$overall
 
 ## QUESTION 2 ########################
+View(rf_errorM)
+rf_errorM$byClass
 
 #NEURAL NETWORK
 #set up grid
