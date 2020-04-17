@@ -7,18 +7,18 @@
 library(lubridate)
 
 #read in streamflow data
-datH <- read.csv("y:\\Data\\activities\\a05\\stream_flow_data.csv",
-                 na.strings = c("Eqp"))
+#datH <- read.csv("y:\\Data\\activities\\a05\\stream_flow_data.csv",
+#                na.strings = c("Eqp"))
 #read data on the mac
-#datH <- read.csv("~/Desktop/GitHub/GEOG331/a05/stream_flow_data.csv", na.strings = c("Eqp"))
+datH <- read.csv("~/Desktop/GitHub/GEOG331/a05/stream_flow_data.csv", na.strings = c("Eqp"))
 #preview data
 head(datH)
 
 #read in precipitation data
 #hourly precipitation is in mm
-datP <- read.csv("y:\\Data\\activities\\a05\\2049867.csv")
+#datP <- read.csv("y:\\Data\\activities\\a05\\2049867.csv")
 #read data on the mac
-#datP <- read.csv("~/Desktop/GitHub/GEOG331/a05/2049867.csv")
+datP <- read.csv("~/Desktop/GitHub/GEOG331/a05/2049867.csv")
 #preview data
 head(datP)
 
