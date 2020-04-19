@@ -243,6 +243,7 @@ nn_errorM$table
 
 nn_errorM$overall
 
+# QUESTION 3 ################## 
 par(mfrow=c(2,1), mai=c(0,0,0,0))
 #random forest
 plot(rf_prediction,
@@ -266,7 +267,7 @@ legend("bottomleft", paste(landclass$landcover),
 #add title
 mtext("Neural network", side=3,cex=2, line=-5)
 
-# QUESTION 3 ##################
+# QUESTION 4 ######################
 
 #ANALYZING PREDICTIONS OF LAND COVER
 
@@ -276,14 +277,35 @@ freq(nnet_prediction)
 #cell count random forest
 freq(rf_prediction)
 
-# QUESTION 4 ######################
+#difference in number of cells
+301363 - 243709 #57654
+#multiply difference in number of cells by area
+400*(301363 - 243709)
 
 # QUESTION 5 ######################
 
+#take the difference in methods -> shows whether nnet or rf over predicts
+difference <- nnet_prediction - rf_prediction
+#take the absolute value -> show difference overall
+difference_gen<-abs(difference)
+
+#plot the differences together
+par(mfrow=c(2,1))
+plot(difference)
+plot(difference_gen)
+
 # QUESTION 6 ######################
+
+#use confusion matrix
 
 # QUESTION 7 ######################
 
+#no code
+
 # QUESTION 8 ######################
 
+#no code
+
 # QUESTION 9 ######################
+
+#no code
